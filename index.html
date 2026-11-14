@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مدرسة ذكور الأمين الأساسية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0D5C63;
+      --primary-dark: #083D42;
+      --primary-soft: #E0F2F1;
+      --accent: #D97706;
+      --accent-soft: #FEF3C7;
+      --break-color: #0284C7;
+      --break-soft: #E0F2FE;
+      --bg: #F6F8F5;
+      --surface: #FFFFFF;
+      --text: #141E1F;
+      --muted: #526567;
+      --border: #DCE5E1;
+      --live: #059669;
+      --danger: #DC2626;
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 16px 14px 40px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Hero Header */
+    .hero-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 12px 28px rgba(13, 92, 99, 0.22);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .school-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-title h1 { font-size: 1.25rem; font-weight: 800; }
+    .hero-title p { font-size: 0.85rem; opacity: 0.86; }
+
+    .clock-bar {
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .day-info strong { display: block; font-size: 1rem; }
+    .day-info span { font-size: 0.82rem; opacity: 0.88; }
+
+    .live-clock {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #FDE68A;
+      font-variant-numeric: tabular-nums;
+      direction: ltr;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 4px 14px rgba(20, 30, 31, 0.04);
+    }
+
+    /* Live Period Card */
+    .live-period-grid {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .pill-live { background: #D1FAE5; color: var(--live); }
+    .pill-break { background: var(--break-soft); color: var(--break-color); }
+    .pill-warn { background: var(--accent-soft); color: #92400E; }
+    .pill-done { background: #E2E8F0; color: #475569; }
+
+    .ring-wrapper {
+      position: relative;
+      width: 126px;
+      height: 126px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .ring-wrapper svg {
+      transform: rotate(-90deg);
+      width: 126px;
+      height: 126px;
+    }
+
+    .ring-center {
+      position: absolute;
+      text-align: center;
+    }
+
+    .ring-center small { display: block; font-size: 0.72rem; color: var(--muted); }
+    .ring-center strong {
+      font-size: 1.3rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #E7ECE9;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 14px 0 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    /* Controls / Alert Panel */
+    .actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      transition: transform 0.12s ease, opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    button:active { transform: scale(0.98); }
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-soft { background: var(--primary-soft); color: var(--primary-dark); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-danger { background: #FEE2E2; color: var(--danger); padding: 6px 10px; font-size: 0.8rem; }
+
+    /* Timeline */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 2px;
+    }
+
+    .period-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 16px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .period-card.active {
+      border-color: var(--primary);
+      background: #F0FDFA;
+      box-shadow: 0 6px 20px rgba(13, 92, 99, 0.12);
+    }
+
+    .period-card.is-break {
+      background: #F8FCFF;
+      border-color: #BAE6FD;
+    }
+
+    .period-card.completed {
+      opacity: 0.78;
+      background: #F8FAFC;
+    }
+
+    .period-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .period-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .period-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .period-card.active .period-num { background: var(--primary); color: #fff; }
+    .period-card.is-break .period-num { background: var(--break-color); color: #fff; }
+
+    .period-meta h3 { font-size: 1rem; font-weight: 800; }
+    .period-meta p { font-size: 0.84rem; color: var(--muted); }
+    .subject-tag { color: var(--primary); font-weight: 700; font-size: 0.86rem; }
+
+    /* Notes Drawer inside Card */
+    .notes-box {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .notes-box.open { display: flex; }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"], textarea, select {
+      font-family: inherit;
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      background: #FAFCFB;
+      color: var(--text);
+    }
+
+    textarea { resize: vertical; min-height: 66px; }
+
+    .note-item {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .note-item.done p { text-decoration: line-through; color: var(--muted); }
+    .note-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--accent-soft);
+      color: #92400E;
+      padding: 2px 8px;
+      border-radius: 8px;
+      margin-bottom: 4px;
+    }
+
+    .banner {
+      display: none;
+      background: var(--accent-soft);
+      border: 1.5px solid var(--accent);
+      color: #78350F;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 700;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .banner.show { display: flex; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- تنبيه صوتي ومرئي -->
+    <div id="bellBanner" class="banner">
+      <span id="bellBannerText">🔔 تنبيه الحصة</span>
+      <button class="btn-outline" onclick="hideBanner()">إغلاق</button>
+    </div>
+
+    <!-- بطاقة المدرسة والساعة -->
+    <header class="hero-header">
+      <div class="hero-top">
+        <div class="school-badge">🏫</div>
+        <div class="hero-title">
+          <h1>مدرسة ذكور الأمين الأساسية</h1>
+          <p>الجدول الدراسي الذكي، الملاحظات، وتنبيهات الحصص</p>
+        </div>
+      </div>
+      <div class="clock-bar">
+        <div class="day-info">
+          <strong id="dayName">--</strong>
+          <span id="fullDate">--</span>
+        </div>
+        <div class="live-clock" id="liveClock">00:00:00</div>
+      </div>
+    </header>
+
+    <!-- بطاقة الحصة الحالية والمتبقي -->
+    <section class="card" id="livePeriodCard">
+      <div class="live-period-grid">
+        <div style="flex:1; min-width:200px;">
+          <span id="liveStatusPill" class="pill pill-live">جاري التحميل</span>
+          <h2 id="livePeriodName" style="margin-top:8px; font-size:1.35rem;">--</h2>
+          <p id="livePeriodSubject" style="color:var(--primary); font-weight:700; font-size:0.95rem;"></p>
+          <p id="livePeriodRange" style="color:var(--muted); font-size:0.88rem; margin-top:4px;">--</p>
+        </div>
+        <div class="ring-wrapper">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#E5EBE8" stroke-width="10"></circle>
+            <circle id="progressRing" cx="60" cy="60" r="50" fill="none" stroke="#D97706"
+              stroke-width="10" stroke-linecap="round"
+              stroke-dasharray="314.16" stroke-dashoffset="0"></circle>
+          </svg>
+          <div class="ring-center">
+            <small>المتبقي</small>
+            <strong id="remainingCountdown">00:00</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div id="linearProgress" class="progress-fill" style="width: 0%;"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.83rem; color:var(--muted); flex-wrap:wrap; gap:6px;">
+        <span id="remainingReadable">--</span>
+        <span id="nextPeriodHint">--</span>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn-soft" id="previewToggleBtn" onclick="togglePreviewMode()">▶ معاينة حصة مباشرة</button>
+        <button class="btn-primary" onclick="requestNotifPermission()">🔔 تفعيل إشعارات الهاتف</button>
+        <button class="btn-accent" onclick="testBell('start')">🔊 تجربة: بدأت الحصة</button>
+        <button class="btn-outline" onclick="testBell('end')">⏰ تجربة: انتهت الحصة</button>
+      </div>
+    </section>
+
+    <!-- قائمة الحصص والملاحظات -->
+    <div class="section-header">
+      <h2 style="font-size:1.1rem;">الجدول اليومي والحصص</h2>
+      <span style="font-size:0.82rem; color:var(--muted);">08:00 ص – 12:45 م</span>
+    </div>
+
+    <div id="scheduleList" style="display:flex; flex-direction:column; gap:12px;"></div>
+  </div>
+
+  <script>
+    const SCHOOL_NAME = "مدرسة ذكور الأمين الأساسية";
+    const PERIODS = [
+      { id: "p1", order: "1", name: "الحصة الأولى", start: [8, 0], end: [8, 40], isBreak: false },
+      { id: "p2", order: "2", name: "الحصة الثانية", start: [8, 45], end: [9, 25], isBreak: false },
+      { id: "p3", order: "3", name: "الحصة الثالثة", start: [9, 30], end: [10, 10], isBreak: false },
+      { id: "p4", order: "4", name: "الحصة الرابعة", start: [10, 15], end: [10, 55], isBreak: false },
+      { id: "br", order: "☕", name: "الاستراحة", start: [10, 55], end: [11, 15], isBreak: true },
+      { id: "p5", order: "5", name: "الحصة الخامسة", start: [11, 20], end: [12, 0], isBreak: false },
+      { id: "p6", order: "6", name: "الحصة السادسة", start: [12, 5], end: [12, 45], isBreak: false }
+    ];
+
+    const STORAGE_NOTES_KEY = "alameen_notes_v1";
+    const STORAGE_SUBJECTS_KEY = "alameen_subjects_v1";
+
+    let notesMap = JSON.parse(localStorage.getItem(STORAGE_NOTES_KEY) || "{}");
+    let subjectsMap = JSON.parse(localStorage.getItem(STORAGE_SUBJECTS_KEY) || "{}");
+    let openDrawers = {};
+    let previewSeconds = null;
+    let firedEventsToday = new Set();
+
+    const toSec = ([h, m]) => h * 3600 + m * 60;
+    const fmt12 = ([h, m]) => {
+      const suf = h < 12 ? "ص" : "م";
+      const hh = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+      return `${String(hh).padStart(2, "0")}:${String(m).padStart(2, "0")} ${suf}`;
+    };
+    const fmtMmSs = (sec) => {
+      const s = Math.max(0, sec);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const r = s % 60;
+      return h > 0
+        ? `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(r).padStart(2, "0")}`
+        : `${String(m).padStart(2, "0")}:${String(r).padStart(2, "0")}`;
+    };
+
+    function saveData() {
+      localStorage.setItem(STORAGE_NOTES_KEY, JSON.stringify(notesMap));
+      localStorage.setItem(STORAGE_SUBJECTS_KEY, JSON.stringify(subjectsMap));
+    }
+
+    // صوت الجرس + النطق العربي
+    function playChimeAndSpeak(text, isEnd) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const freqs = isEnd ? [880, 784, 659] : [659, 880];
+        freqs.forEach((f, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.value = f;
+          const start = ctx.currentTime + idx * 0.24;
+          gain.gain.setValueAtTime(0.25, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.45);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + 0.45);
+        });
+      } catch (e) {}
+
+      if ("speechSynthesis" in window) {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "ar-SA";
+        utter.rate = 0.95;
+        setTimeout(() => window.speechSynthesis.speak(utter), 550);
+      }
+    }
+
+    function requestNotifPermission() {
+      if (!("Notification" in window)) {
+        alert("المتصفح الحالي لا يدعم إشعارات سطح المكتب.");
+        return;
+      }
+      Notification.requestPermission().then(res => {
+        if (res === "granted") {
+          showBanner("تم تفعيل إشعارات الهاتف بنجاح ✅");
+        }
+      });
+    }
+
+    function sendNotification(title, body, isEnd) {
+      showBanner(`${isEnd ? "⏰" : "🔔"} ${title}`);
+      playChimeAndSpeak(title, isEnd);
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, { body });
+      }
+    }
+
+    function testBell(type) {
+      const p = PERIODS[0];
+      if (type === "start") {
+        sendNotification(`بدأت ${p.name}`, `${SCHOOL_NAME} • (${fmt12(p.start)} - ${fmt12(p.end)})`, false);
+      } else {
+        sendNotification(`انتهت ${p.name}`, `${SCHOOL_NAME} • انتهى وقت ${p.name}`, true);
+      }
+    }
+
+    function showBanner(msg) {
+      document.getElementById("bellBannerText").textContent = msg;
+      document.getElementById("bellBanner").classList.add("show");
+    }
+
+    function hideBanner() {
+      document.getElementById("bellBanner").classList.remove("show");
+    }
+
+    function togglePreviewMode() {
+      if (previewSeconds !== null) {
+        previewSeconds = null;
+        document.getElementById("previewToggleBtn").textContent = "▶ معاينة حصة مباشرة";
+      } else {
+        previewSeconds = toSec([8, 18]) + 20;
+        document.getElementById("previewToggleBtn").textContent = "↩ العودة للوقت الحقيقي";
+      }
+      tick();
+    }
+
+    function checkAutoBells(now) {
+      const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+      const dateKey = now.toISOString().slice(0, 10);
+      PERIODS.forEach(p => {
+        const s = toSec(p.start);
+        const e = toSec(p.end);
+        if (nowSec >= s && nowSec <= s + 1) {
+          const k = `${dateKey}_${p.id}_start`;
+          if (!firedEventsToday.has(k)) {
+            firedEventsToday.add(k);
+            sendNotification(`بدأت ${p.name}`, `${SCHOOL_NAME} • ${fmt12(p.start)} - ${fmt12(p.end)}`, false);
+          }
+        }
+        if (nowSec >= e && nowSec <= e + 1) {
+          const k = `${dateKey}_${p.id}_end`;
+          if (!firedEventsToday.has(k)) {
+            firedEventsToday.add(k);
+            sendNotification(`انتهت ${p.name}`, `${SCHOOL_NAME} • انتهى وقت ${p.name}`, true);
+          }
+        }
+      });
+    }
+
+    function renderSchedule(activeId, nowSec) {
+      const list = document.getElementById("scheduleList");
+      list.innerHTML = "";
+
+      PERIODS.forEach(p => {
+        const s = toSec(p.start);
+        const e = toSec(p.end);
+        const isActive = p.id === activeId;
+        const isCompleted = nowSec >= e;
+        const notes = notesMap[p.id] || [];
+        const subj = subjectsMap[p.id] || "";
+        const isOpen = !!openDrawers[p.id];
+
+        const card = document.createElement("div");
+        card.className = `period-card ${isActive ? "active" : ""} ${p.isBreak ? "is-break" : ""} ${(!isActive && isCompleted) ? "completed" : ""}`;
+
+        const statusBadge = isActive
+          ? `<span class="pill pill-live">جارية الآن</span>`
+          : (isCompleted ? `<span class="pill pill-done">انتهت</span>` : `<span class="pill pill-warn">قادمة</span>`);
+
+        card.innerHTML = `
+          <div class="period-top">
+            <div class="period-left">
+              <div class="period-num">${p.order}</div>
+              <div class="period-meta">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <h3>${p.name}</h3>
+                  ${statusBadge}
+                </div>
+                ${subj ? `<div class="subject-tag">📘 ${subj}</div>` : ""}
+                <p>🕒 ${fmt12(p.start)} ← ${fmt12(p.end)} (${(e - s) / 60} دقيقة)</p>
+              </div>
+            </div>
+            <button class="btn-soft" onclick="toggleDrawer('${p.id}')">
+              📝 الملاحظات (${notes.length})
+            </button>
+          </div>
+          <div class="notes-box ${isOpen ? "open" : ""}" id="drawer_${p.id}">
+            <div class="input-row">
+              <input type="text" id="subj_${p.id}" value="${subj.replace(/"/g, "&quot;")}" placeholder="اسم المادة أو الصف (اختياري)..." style="flex:1; min-width:180px;">
+              <button class="btn-outline" onclick="saveSubject('${p.id}')">حفظ المادة</button>
+            </div>
+            <div class="input-row">
+              <select id="tag_${p.id}" style="width:auto; min-width:140px;">
+                <option value="ملاحظة عامة">ملاحظة عامة</option>
+                <option value="واجب منزلي">واجب منزلي</option>
+                <option value="تحضير درس">تحضير درس</option>
+                <option value="متابعة طالب">متابعة طالب</option>
+              </select>
+              <textarea id="noteInput_${p.id}" placeholder="سجّل ملاحظتك لهذه الحصة..."></textarea>
+              <button class="btn-primary" style="width:100%;" onclick="addNote('${p.id}')">💾 حفظ الملاحظة</button>
+            </div>
+            <div id="notesList_${p.id}" style="display:flex; flex-direction:column; gap:8px;">
+              ${notes.length === 0 ? `<p style="font-size:0.84rem; color:var(--muted);">لا توجد ملاحظات مسجلة لهذه الحصة.</p>` :
+                notes.map((n, idx) => `
+                  <div class="note-item ${n.done ? "done" : ""}">
+                    <div style="flex:1;">
+                      <span class="note-tag">${n.tag}</span>
+                      <p style="font-size:0.9rem;">${n.text}</p>
+                      <small style="color:var(--muted); font-size:0.75rem;">${n.time}</small>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                      <button class="btn-outline" style="padding:6px 10px; font-size:0.8rem;" onclick="toggleNote('${p.id}', ${idx})">${n.done ? "تراجع" : "تم"}</button>
+                      <button class="btn-danger" onclick="deleteNote('${p.id}', ${idx})">حذف</button>
+                    </div>
+                  </div>
+                `).join("")
+              }
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    window.toggleDrawer = (pid) => {
+      openDrawers[pid] = !openDrawers[pid];
+      tick(true);
+    };
+
+    window.saveSubject = (pid) => {
+      const val = document.getElementById(`subj_${pid}`).value.trim();
+      subjectsMap[pid] = val;
+      saveData();
+      tick(true);
+    };
+
+    window.addNote = (pid) => {
+      const text = document.getElementById(`noteInput_${pid}`).value.trim();
+      const tag = document.getElementById(`tag_${pid}`).value;
+      if (!text) return;
+      notesMap[pid] = notesMap[pid] || [];
+      notesMap[pid].unshift({
+        tag,
+        text,
+        done: false,
+        time: new Date().toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" })
+      });
+      saveData();
+      tick(true);
+    };
+
+    window.toggleNote = (pid, idx) => {
+      notesMap[pid][idx].done = !notesMap[pid][idx].done;
+      saveData();
+      tick(true);
+    };
+
+    window.deleteNote = (pid, idx) => {
+      notesMap[pid].splice(idx, 1);
+      saveData();
+      tick(true);
+    };
+
+    let lastRenderedKey = "";
+
+    function tick(forceRender = false) {
+      const realNow = new Date();
+      checkAutoBells(realNow);
+
+      const dayFmt = new Intl.DateTimeFormat("ar-SA", { weekday: "long" });
+      const dateFmt = new Intl.DateTimeFormat("ar-SA-u-nu-latn", { day: "numeric", month: "long", year: "numeric" });
+      document.getElementById("dayName").textContent = dayFmt.format(realNow);
+      document.getElementById("fullDate").textContent = dateFmt.format(realNow);
+
+      let nowSec;
+      if (previewSeconds !== null) {
+        if (!forceRender) previewSeconds++;
+        nowSec = previewSeconds;
+        const ph = Math.floor(nowSec / 3600) % 24;
+        const pm = Math.floor((nowSec % 3600) / 60);
+        const ps = nowSec % 60;
+        const suf = ph < 12 ? "ص" : "م";
+        const hh = ph === 0 ? 12 : (ph > 12 ? ph - 12 : ph);
+        document.getElementById("liveClock").textContent = `${String(hh).padStart(2,"0")}:${String(pm).padStart(2,"0")}:${String(ps).padStart(2,"0")} ${suf}`;
+      } else {
+        nowSec = realNow.getHours() * 3600 + realNow.getMinutes() * 60 + realNow.getSeconds();
+        const h24 = realNow.getHours();
+        const suf = h24 < 12 ? "ص" : "م";
+        const hh = h24 === 0 ? 12 : (h24 > 12 ? h24 - 12 : h24);
+        document.getElementById("liveClock").textContent = `${String(hh).padStart(2,"0")}:${String(realNow.getMinutes()).padStart(2,"0")}:${String(realNow.getSeconds()).padStart(2,"0")} ${suf}`;
+      }
+
+      const ring = document.getElementById("progressRing");
+      const circumference = 314.16;
+      const firstStart = toSec(PERIODS[0].start);
+      const lastEnd = toSec(PERIODS[PERIODS.length - 1].end);
+
+      let activePeriod = null;
+      let statusHtml = "";
+
+      if (nowSec < firstStart) {
+        const rem = firstStart - nowSec;
+        document.getElementById("liveStatusPill").className = "pill pill-warn";
+        document.getElementById("liveStatusPill").textContent = "قبل بدء الدوام";
+        document.getElementById("livePeriodName").textContent = "تبدأ الحصة الأولى قريباً";
+        document.getElementById("livePeriodSubject").textContent = "";
+        document.getElementById("livePeriodRange").textContent = `الساعة ${fmt12(PERIODS[0].start)}`;
+        document.getElementById("remainingCountdown").textContent = fmtMmSs(rem);
+        document.getElementById("remainingReadable").textContent = `متبقي لبدء الدوام: ${Math.ceil(rem / 60)} دقيقة`;
+        document.getElementById("nextPeriodHint").textContent = `الأولى: ${PERIODS[0].name}`;
+        ring.style.strokeDashoffset = 0;
+        document.getElementById("linearProgress").style.width = "0%";
+      } else if (nowSec >= lastEnd) {
+        document.getElementById("liveStatusPill").className = "pill pill-done";
+        document.getElementById("liveStatusPill").textContent = "انتهى الدوام";
+        document.getElementById("livePeriodName").textContent = "اكتمل اليوم الدراسي";
+        document.getElementById("livePeriodSubject").textContent = "";
+        document.getElementById("livePeriodRange").textContent = "08:00 ص – 12:45 م";
+        document.getElementById("remainingCountdown").textContent = "00:00";
+        document.getElementById("remainingReadable").textContent = "يمكنك تسجيل ملاحظاتك أو تجربة التنبيهات";
+        document.getElementById("nextPeriodHint").textContent = "";
+        ring.style.strokeDashoffset = circumference;
+        document.getElementById("linearProgress").style.width = "100%";
+      } else {
+        for (let i = 0; i < PERIODS.length; i++) {
+          const p = PERIODS[i];
+          const s = toSec(p.start);
+          const e = toSec(p.end);
+          const next = PERIODS[i + 1];
+
+          if (nowSec >= s && nowSec < e) {
+            activePeriod = p;
+            const total = e - s;
+            const elapsed = nowSec - s;
+            const rem = e - nowSec;
+            const ratio = elapsed / total;
+
+            document.getElementById("liveStatusPill").className = p.isBreak ? "pill pill-break" : "pill pill-live";
+            document.getElementById("liveStatusPill").textContent = p.isBreak ? "استراحة حالياً" : "حصة جارية الآن";
+            document.getElementById("livePeriodName").textContent = p.name;
+            document.getElementById("livePeriodSubject").textContent = subjectsMap[p.id] ? `📘 ${subjectsMap[p.id]}` : "";
+            document.getElementById("livePeriodRange").textContent = `${fmt12(p.start)} ← ${fmt12(p.end)}`;
+            document.getElementById("remainingCountdown").textContent = fmtMmSs(rem);
+            document.getElementById("remainingReadable").textContent = `متبقي ${Math.floor(rem / 60)} دقيقة و ${rem % 60} ثانية`;
+            document.getElementById("nextPeriodHint").textContent = next ? `التالي: ${next.name} (${fmt12(next.start)})` : "الحصة الأخيرة";
+            ring.style.strokeDashoffset = (circumference * ratio).toFixed(2);
+            document.getElementById("linearProgress").style.width = `${(ratio * 100).toFixed(1)}%`;
+            break;
+          }
+
+          if (next && nowSec >= e && nowSec < toSec(next.start)) {
+            const gapTotal = toSec(next.start) - e;
+            const rem = toSec(next.start) - nowSec;
+            const ratio = (gapTotal - rem) / gapTotal;
+            document.getElementById("liveStatusPill").className = "pill pill-warn";
+            document.getElementById("liveStatusPill").textContent = "استراحة انتقالية (5 دقائق)";
+            document.getElementById("livePeriodName").textContent = `الاستعداد لـ ${next.name}`;
+            document.getElementById("livePeriodSubject").textContent = subjectsMap[next.id] ? `📘 ${subjectsMap[next.id]}` : "";
+            document.getElementById("livePeriodRange").textContent = `تبدأ ${fmt12(next.start)}`;
+            document.getElementById("remainingCountdown").textContent = fmtMmSs(rem);
+            document.getElementById("remainingReadable").textContent = `تبدأ خلال ${Math.floor(rem / 60)} د و ${rem % 60} ث`;
+            document.getElementById("nextPeriodHint").textContent = `انتهت ${p.name}`;
+            ring.style.strokeDashoffset = (circumference * ratio).toFixed(2);
+            document.getElementById("linearProgress").style.width = `${(ratio * 100).toFixed(1)}%`;
+            break;
+          }
+        }
+      }
+
+      const renderKey = `${activePeriod ? activePeriod.id : "none"}_${PERIODS.filter(p => nowSec >= toSec(p.end)).length}`;
+      if (forceRender || renderKey !== lastRenderedKey) {
+        lastRenderedKey = renderKey;
+        renderSchedule(activePeriod ? activePeriod.id : null, nowSec);
+      }
+    }
+
+    tick(true);
+    setInterval(() => tick(false), 1000);
+  </script>
+</body>
+</html>
